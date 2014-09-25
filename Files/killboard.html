@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="js/overwolfUtils.js"></script>
+	<script type="text/javascript" src="js/censusSOE.js"></script>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+	<audio id="soundFirstblood" src="sounds/firstblood.ogg"></audio>
+
+	<audio id="soundHeadshot" src="sounds/headshot.ogg"></audio>
+	<audio id="soundbullseye" src="sounds/bullseye.ogg"></audio>
+	<audio id="soundheadhunter" src="sounds/headhunter.ogg"></audio>
+
+	<audio id="soundassasin" src="sounds/assasin.ogg"></audio>
+	<audio id="sounddoublekill" src="sounds/doublekill.ogg"></audio>
+	<audio id="soundmutualdestruction" src="sounds/mutualdestruction.ogg"></audio>
+
+	<audio id="soundbloodbath" src="sounds/bloodbath.ogg"></audio>
+	<audio id="sounderadication" src="sounds/eradication.ogg"></audio>
+	<audio id="soundexcellent" src="sounds/excellent.ogg"></audio>
+	<audio id="soundextermination" src="sounds/extermination.ogg"></audio>
+	<audio id="soundgodlike" src="sounds/godlike.ogg"></audio>
+	<audio id="soundimpressive" src="sounds/impressive.ogg"></audio>
+	<audio id="soundjuggernaut" src="sounds/juggernaut.ogg"></audio>
+	<audio id="soundkillingmachine" src="sounds/killingmachine.ogg"></audio>
+	<audio id="soundkillingspree" src="sounds/killingspree.ogg"></audio>
+	<audio id="soundmassacre" src="sounds/massacre.ogg"></audio>
+	<audio id="soundmegakill" src="sounds/megakill.ogg"></audio>
+	<audio id="soundmonsterkill" src="sounds/monsterkill.ogg"></audio>
+	<audio id="soundmultikill" src="sounds/multikill.ogg"></audio>
+	<audio id="soundultrakill" src="sounds/ultrakill.ogg"></audio>
+	<audio id="soundunreal" src="sounds/unreal.ogg"></audio>
+	<audio id="soundunstoppable" src="sounds/unstoppable.ogg"></audio>
+
+	<audio id="soundrampage" src="sounds/rampage.ogg"></audio>
+	<audio id="soundpancake" src="sounds/pancake.ogg"></audio>
+	<audio id="soundroadkill" src="sounds/roadkill.ogg"></audio>
+	<audio id="soundroadrampage" src="sounds/roadrampage.ogg"></audio>
+	<audio id="soundroadrage" src="sounds/roadrage.ogg"></audio>
+	<audio id="soundhitandrun" src="sounds/hitandrun.ogg"></audio>
+
+	
+	<audio id="soundpayback" src="sounds/payback.ogg"></audio>
+	<audio id="soundvengeance" src="sounds/vengeance.ogg"></audio>
+	
+	<div class="resizeGrip" id="resizeGripTopLeft" onmousedown="dragResize('TopLeft');"></div>
+	<div class="resizeGrip" id="resizeGripTop" onmousedown="dragResize('Top');"></div>
+	<div class="resizeGrip" id="resizeGripTopRight" onmousedown="dragResize('TopRight');"></div>
+	<div class="resizeGrip" id="resizeGripRight" onmousedown="dragResize('Right');"></div>
+	<div class="resizeGrip" id="resizeGripBottomRight" onmousedown="dragResize('BottomRight');"></div>
+	<div class="resizeGrip" id="resizeGripBottom" onmousedown="dragResize('Bottom');"></div>
+	<div class="resizeGrip" id="resizeGripBottomLeft" onmousedown="dragResize('BottomLeft');"></div>
+	<div class="resizeGrip" id="resizeGripLeft" onmousedown="dragResize('Left');"></div>
+	<div id="content" >
+		<table id="KillboardTable" onmousedown="dragMove();"></table>
+		<div class="windowController">
+			<button type="button" style="color: black" onclick="minimizeWindows()">Minimize</button>
+			<button type="button" style="color: black" onclick="closeWindows()">Close</button>
+		</div>	
+	</div>
+<body>
+
+<script type="text/javascript">									
+displayKillboard = function displayKillboard(playerId, tableId) {
+	console.log("Getting kill data");
+	censusSOE.GetKillboardById(playerId, 20, function (killboardList) {
+		console.log("Data recieved");
+		showKillboardInTable(killboardList, $(tableId));
+	});
+}
+
+function showKillboardInTable(killboardList, table) {
+	var tableBody = $('<tbody>');
+	var time;
+	var odd = false;
+	
+	for (var i = 0; i < killboardList.length; ++i) {
+		var p = killboardList[i];
+
+		var other;						
+		var tr = $('<tr>');
+		if (odd) {
+			tr.attr('class', 'odd')
+		} else {
+			tr.attr('class', 'even');
+		}
+		odd = !odd
+		
+		if("attacker" in p){
+			if(p.attacker_character_id == playerId){
+				if(p.character_id == playerId){
+					other = p.character;
+					tr.append($('<td>').text("SUICIDE").css({'color':'red', 'width':'70px'}));
+				}else{
+					other = p.character;
+					tr.append($('<td>').text("KILLED").css({'color':'green', 'width':'70px'}));
+				}
+			}else{
+				other = p.attacker;
+				tr.append($('<td>').text("KILLED BY").css({'color':'red', 'width':'70px'}));
+			}
+		}else{
+			if( ("character" in p) && (p.character_id == playerId)){
+				tr.append($('<td>').text("KILLED BY").css({'color':'red', 'width':'70px'}));
+			}else{
+				tr.append($('<td>').text("UNKOWN").css({'width':'70px'}));
+			}
+		}
+			
+		if(typeof other === 'undefined'){
+			tr.append($('<td>').text('UNKOWN'));
+			tr.append($('<td>').text('-').css({'width':'30px'}));
+			tr.append($('<td>').text('-').css({'width':'30px'}));
+			tr.append($('<td>').text('-').css({'width':'30px'}));
+
+		}else{
+			tr.append($('<td>').text(other.name.first));
+			tr.append($('<td>').text(other.battle_rank.value).css({'width':'30px'}));
+			tr.append($('<td>').append($('<img>').attr('src', 'img/'+other.faction.image_id+'-s.png')).css({'width':'30px'}));
+			tr.append($('<td>').append($('<img>').attr('src', 'img/'+other.profile.image_id+'.png')).css({'width':'30px'}));
+		}                      
+
+
+		var cell = cell = $('<td>').attr('class', 'restrict-width');		
+		if("weapon" in p){
+			cell.append( $('<span>').text(p.weapon.name.en + " "));
+		}
+		if("vehicle" in p){
+			cell.append( $('<span>').text("(" + p.vehicle.name.en +")"));
+		}
+		if (p.is_headshot == '1'){
+			cell.append($('<img>').attr({'src':'img/headshot.png', 'class':'img_small'}));
+		}
+		tr.append(cell);
+
+		
+		time = new Date(p.timestamp*1000);
+		tr.append($('<td>').text(time.toLocaleTimeString()).css({'width':'95px'}));
+
+		tableBody.append(tr);
+	}
+	table.empty();
+	table.append(tableBody);	
+};
+
+var soundQueue = [];
+var counter = 0;
+
+refreshCallback = function () {
+	playerId = localStorage.getItem("playerId");
+	captureDeath = localStorage.getItem("captureDeath");
+	captureKill = localStorage.getItem("captureKill");
+
+	var connection = new WebSocket('wss://push.planetside2.com/streaming?service-id=s:example') 
+
+	var soundHS = $('#soundHeadshot');
+	
+	var soundimpressive = $('#soundimpressive');
+	var soundexcellent = $('#soundexcellent');
+	var soundunreal = $('#soundunreal');
+	var soundunstoppable = $('#soundunstoppable');
+	var firstSection = [soundimpressive, soundexcellent, soundunreal, soundunstoppable];	
+	
+	var soundmonsterkill = $('#soundmonsterkill');
+	var soundkillingspree = $('#soundkillingspree');
+	var secondSection = [soundmonsterkill, soundkillingspree];	
+	
+	var soundbloodbath = $('#soundbloodbath');
+	var sounderadication = $('#sounderadication');
+	var soundextermination = $('#soundextermination');
+	var soundgodlike = $('#soundextermination');
+	var soundjuggernaut = $('#soundjuggernaut');
+	var soundkillingmachine = $('#soundkillingmachine');
+	var soundmassacre = $('#soundmassacre');
+	var soundmegakill = $('#soundmegakill');
+	var soundultrakill = $('#soundultrakill');
+	var thirdSection = [soundbloodbath, sounderadication, soundextermination, 
+	soundgodlike, soundjuggernaut, soundkillingmachine, soundmassacre, 
+	soundmegakill, soundultrakill];		
+
+	// When the connection is open, send some data to the server
+	connection.onopen = function () {
+		console.log('Connection created');
+		connection.send('{"service":"event","action":"subscribe","characters":["' + playerId + '"],"eventNames":["Death"]}');
+	};
+
+	// Log errors
+	connection.onerror = function (error) {
+		console.log('WebSocket Error ' + error);
+	};
+
+	// Log errors
+	connection.onclose = function () {
+		console.log('WebSocket Closed');
+		refreshCallback();
+	};
+	
+	// Log messages from the server
+	connection.onmessage = function (e) {
+		message =  JSON.parse(e.data);
+		if(typeof message.payload !== 'undefined'){
+			console.log('Kill event');
+			if(message.payload.attacker_character_id === playerId){
+				console.log('Kill');
+				counter++;
+				if(localStorage.getItem("killScreenShot") === 'true'){
+					setTimeout(function(){takeScreenshot()}, 440);
+				}
+				if(message.payload.is_headshot === "1"){
+					addToQueue(soundQueue, soundHS);
+				}
+
+				
+				if(counter == 3){
+					var index = Math.floor((Math.random() * firstSection.length));
+					addToQueue(soundQueue, firstSection[index]);
+				}else if(counter == 5){
+					var index = Math.floor((Math.random() * secondSection.length));
+					addToQueue(soundQueue, secondSection[index]);
+				}else if(counter >= 7 && (counter % 3) == 0){
+					var index = Math.floor((Math.random() * thirdSection.length));
+					addToQueue(soundQueue, thirdSection[index]);
+				}
+			}else{
+				console.log('Death');
+				counter = 0;
+				if(localStorage.getItem("deathScreenShot") === 'true'){
+					setTimeout(function(){takeScreenshot()}, 2500);
+				}
+			}
+			setTimeout(function(){displayKillboard(playerId, "#KillboardTable")}, 1500);
+		};
+	};	
+		
+	displayKillboard(playerId, "#KillboardTable");
+}
+
+$(document).ready(refreshCallback());
+</script>
+</html>

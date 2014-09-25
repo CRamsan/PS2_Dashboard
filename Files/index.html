@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html>
+	<head> 
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+		<script type="text/javascript" src="js/overwolfUtils.js"></script>
+		<script type="text/javascript" src="js/censusSOE.js"></script>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+
+	<body>
+		<div class="resizeGrip" id="resizeGripTopLeft" onmousedown="dragResize('TopLeft');"></div>
+		<div class="resizeGrip" id="resizeGripTop" onmousedown="dragResize('Top');"></div>
+		<div class="resizeGrip" id="resizeGripTopRight" onmousedown="dragResize('TopRight');"></div>
+		<div class="resizeGrip" id="resizeGripRight" onmousedown="dragResize('Right');"></div>
+		<div class="resizeGrip" id="resizeGripBottomRight" onmousedown="dragResize('BottomRight');"></div>
+		<div class="resizeGrip" id="resizeGripBottom" onmousedown="dragResize('Bottom');"></div>
+		<div class="resizeGrip" id="resizeGripBottomLeft" onmousedown="dragResize('BottomLeft');"></div>
+		<div class="resizeGrip" id="resizeGripLeft" onmousedown="dragResize('Left');"></div>
+		
+		<div id="content" >
+			<div onmousedown="dragMove();">
+				<div>
+					<form  style="float: left" name="myForm" method="get" onsubmit="search(this);return false;">
+						Character Name: 
+						<input type="text" id="charName" style="color: black"/>
+						<input type="button" name="button" value="Search" onClick="search(this.form)" style="color: black">
+					</form>
+				</div>
+				<div class="windowController" style="float: right">
+					<button type="button" style="color: black" onclick="minimizeWindows()">-</button>
+					<button type="button" style="color: black" onclick="closeWindows()">X</button>
+				</div>
+				<table id="PlayerTable"></table>
+				<div class="container" style="height: 130px;">
+					<p></p>
+					<button type="button" style="color: black" onclick="openWindow('Killboard')">Killboard</button><p></p>
+					Screenshot:<p></p>
+					<input type="checkbox" id="killScreenShot" onclick="updateSettings()" >Kills<p></p>
+					<input type="checkbox" id="deathScreenShot" onclick="updateSettings()" >Deaths
+				</div>
+				<div class="container" style="height: 130px;">
+					<p></p>
+					<button type="button" style="color: black" onclick="openWindow('Outfit')">Outfit</button>
+				</div>
+				<div class="container" style="height: 130px;">
+					<p></p>
+					<button type="button" style="color: black" onclick="openWindow('Stats')">Stats</button>
+				</div>
+				<div class="container" style="height: 130px;">
+					<p></p>
+					<button type="button" style="color: black" onclick="openCenteredWindow('ReticleDot')">Reticle A</button>
+					<button type="button" style="color: black" onclick="closeWindow('ReticleDot')">Close</button>
+					<p></p>		
+					<button type="button" style="color: black" onclick="openCenteredWindow('ReticleCircle')">Reticle B</button>
+					<button type="button" style="color: black" onclick="closeWindow('ReticleCircle')">Close</button>
+					<p></p>				
+					<button type="button" style="color: black" onclick="openCenteredWindow('ReticleCross')">Reticle C</button>
+					<button type="button" style="color: black" onclick="closeWindow('ReticleCross')">Close</button>
+				</div>
+				<div class="container" style="height: 130px;">
+					<p></p>
+					<button type="button" style="color: black" onclick="openWindow('TSController')">TeamSpeak</button>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">	
+		updateSettings = function(){
+			localStorage.setItem("killScreenShot", document.getElementById("killScreenShot").checked);
+			localStorage.setItem("deathScreenShot", document.getElementById("deathScreenShot").checked);	
+		}
+	
+		document.getElementById("killScreenShot").checked = (localStorage.getItem("killScreenShot") === 'true');
+		document.getElementById("deathScreenShot").checked = (localStorage.getItem("deathScreenShot") === 'true');	
+	
+		var updateTimer = undefined;
+		displayPlayer = function(playerId, tableId) {
+			console.log("Getting player data for " + playerId);
+			censusSOE.GetFullProfileById(playerId, function (playerData) {
+				console.log("Data recieved");
+				showCharacter(playerData, $(tableId));
+			});
+		}
+
+		function showCharacter(playerData, table) {
+			var thr = $('<tr>');
+			
+			thr.append($('<th>').text("NAME"));
+			thr.append($('<th>').text("BR"));
+			thr.append($('<th>').text("FACTION"));
+			thr.append($('<th>').text("CLASS"));
+			thr.append($('<th>').text("STATUS"));
+			thr.append($('<th>').text("OUTFIT"));
+			thr.append($('<th>').text("TIME PLAYED"));
+						
+			var tableBody = $('<tbody>');
+			var odd = false;
+
+			var p = playerData;
+				
+			var tr = $('<tr>').css('color', '#' + 'ffffff');
+			
+			if (odd) {
+				tr.attr('class', 'odd');
+			} else {
+				tr.attr('class', 'even');
+			}
+			odd = !odd
+				
+			tr.append($('<td>').text(p.name.first));
+			tr.append($('<td>').text(p.battle_rank.value));
+			
+			tr.append($('<td>').append($('<img>').attr('src', 'img/'+p.faction.image_id+'.png')));
+			tr.append($('<td>').append($('<img>').attr('src', 'img/'+p.profile.image_id+'.png')));
+
+			if (p.online_status == '0'){
+				tr.append($('<td>').text("OFFLINE").css('color', 'red'));
+			}else{
+				tr.append($('<td>').text("ONLINE").css('color', 'green'));
+			}			
+			if("outfit" in p){
+				tr.append($('<td>').text(p.outfit.name));
+			}else{
+				tr.append($('<td>').text("NONE"));
+			}
+			tr.append($('<td>').text( Math.round(p.times.minutes_played / 60) +' hours' ));
+			
+			tableBody.append(tr);
+
+			table.empty();
+			table.append($('<thead>').append(thr));
+			table.append(tableBody);
+		};
+		
+		refreshCallback = function (inputName) {
+			clearTimeout(updateTimer)
+			if(typeof inputName !== 'undefined'){
+				playerName = inputName;
+			}else{
+				playerName = localStorage.getItem("playerName");
+			}
+
+			if(typeof playerName !== 'undefined'){
+				censusSOE.GetCharacterIdByName(playerName.toLowerCase(), function (character_list) {
+					try{
+						player = {
+							'id' : character_list[0].character_id,
+							'name' : character_list[0].name.first
+						}
+						localStorage.setItem("playerName", character_list[0].name.first);
+						localStorage.setItem("playerId", character_list[0].character_id);
+						localStorage.setItem("serverId", character_list[0].world_id);
+					}catch(err){
+						window.alert("No character was found with the name " + name);
+						return;
+					}
+
+					if(typeof character_list[0].outfit !== 'undefined'){
+						player["outfit_id"] = character_list[0].outfit.outfit_id;
+						localStorage.setItem("outfitId", character_list[0].outfit.outfit_id);
+					}else{
+						localStorage.removeItem("outfitId");
+					}
+					displayPlayer(player["id"], "#PlayerTable");
+					updateTimer = setInterval(function(){
+						displayPlayer(player["id"], "#PlayerTable");
+					},20000);
+
+				});
+			}
+			$(window).keydown(function(event){
+				if(event.keyCode == 13) {
+					event.preventDefault();
+					return false;
+				}
+			});
+			updateSettings();
+		}
+		
+		$(document).ready(refreshCallback());
+	</script>
+</html>

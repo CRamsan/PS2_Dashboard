@@ -1,0 +1,83 @@
+{
+	"manifest_version":1,
+	"type":"WebApp",
+	"meta":{
+		"name":"PS2 Dashboard",
+		"version":"2.0.2",
+		"minimum-overwolf-version":"0.77.10",
+		"author":"Cesar CRamsan Ramirez",
+		"icon":"IconMouseOver.png",
+		"icon_gray":"IconMouseNormal.png",
+		"description":"Planetside 2 Dashboard with lots of utilities for players. It includes, stats, killboard, crosshairs, teamspeak integration and more..."
+	},
+	"data": {
+		"start_window":"MainWindow",
+		"windows":{
+			"MainWindow":{
+					"file":"Files/index.html",
+					"transparent":true,
+					"resizable":true,
+					"size":{"width":450, "height":230},
+					"min_size":{"width":420, "height":90},
+					"max_size":{"width":512, "height":258}
+				},
+			"Killboard":{
+					"file":"Files/killboard.html",
+					"transparent":true,
+					"resizable":true,
+					"size":{"width":550, "height":300},
+					"min_size":{"width":550, "height":65},
+					"max_size":{"width":670, "height":355}
+			},
+			"Outfit":{
+					"file":"Files/outfit.html",
+					"transparent":true,
+					"resizable":true,
+					"size":{"width":550, "height":300},
+					"min_size":{"width":334, "height":65},
+					"max_size":{"width":670, "height":550}
+			},
+			"Maps":{
+					"file":"Files/map.html",
+					"transparent":true,
+					"resizable":true,
+					"size":{"width":600, "height":750},
+					"min_size":{"width":500, "height":500},
+			},			
+			"Stats":{
+					"file":"Files/stats.html",
+					"transparent":true,
+					"resizable":true,
+					"min_size":{"width":450, "height":87},
+					"max_size":{"width":600, "height":286},
+					"size":{"width":500, "height":175},
+			},
+			"ReticleDot":{
+					"file":"Files/reticle_dot.html",
+					"transparent":true,
+					"resizable":false,
+					"size":{"width":220, "height":220},
+			},
+			"ReticleCircle":{
+					"file":"Files/reticle_circle.html",
+					"transparent":true,
+					"resizable":false,
+					"size":{"width":220, "height":220},
+			},
+			"ReticleCross":{
+					"file":"Files/reticle_cross.html",
+					"transparent":true,
+					"resizable":false,
+					"size":{"width":220, "height":220},
+			},
+			"TSController":{
+					"file":"Files/tscontroller.html",
+					"transparent":true,
+					"resizable":true,
+					"min_size":{"width":120, "height":120},
+					"max_size":{"width":450, "height":950},
+					"size":{"width":200, "height":575},
+			},
+		}
+	}
+}

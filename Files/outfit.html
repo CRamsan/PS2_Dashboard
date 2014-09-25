@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="js/overwolfUtils.js"></script>
+	<script type="text/javascript" src="js/censusSOE.js"></script>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+	<div class="resizeGrip" id="resizeGripTopLeft" onmousedown="dragResize('TopLeft');"></div>
+	<div class="resizeGrip" id="resizeGripTop" onmousedown="dragResize('Top');"></div>
+	<div class="resizeGrip" id="resizeGripTopRight" onmousedown="dragResize('TopRight');"></div>
+	<div class="resizeGrip" id="resizeGripRight" onmousedown="dragResize('Right');"></div>
+	<div class="resizeGrip" id="resizeGripBottomRight" onmousedown="dragResize('BottomRight');"></div>
+	<div class="resizeGrip" id="resizeGripBottom" onmousedown="dragResize('Bottom');"></div>
+	<div class="resizeGrip" id="resizeGripBottomLeft" onmousedown="dragResize('BottomLeft');"></div>
+	<div class="resizeGrip" id="resizeGripLeft" onmousedown="dragResize('Left');"></div>
+
+	<div id="content">
+		<table id="MembersTable" onmousedown="dragMove();" width="100%"></table>
+		<div class="windowController">
+			<button type="button" style="color: black" onclick="minimizeWindows()">Minimize</button>
+			<button type="button" style="color: black" onclick="closeWindows()">Close</button>
+		</div>	
+	</div>
+<body>
+
+<script type="text/javascript">									
+displayOutfitMembers = function displayOutfit(outfit_id, tableId) {
+	censusSOE.GetOutfitOnlineMembersById(outfit_id, function (outfit) {
+		showMembersInfoInTable(outfit, $(tableId));
+	});
+}
+
+
+function showMembersInfoInTable(outfit, table) {
+	//var thr = $('<tr>');
+
+	/*thr.append($('<th>').text("ONLINE MEMBER"));
+	thr.append($('<th>').text("BR"));
+	thr.append($('<th>').text("RANK"));
+	thr.append($('<th>').text("CLASS"));*/
+	/*thr.append($('<th>').text("AEROSPACE"));
+	thr.append($('<th>').text("MECHANIZED"));
+	thr.append($('<th>').text("INFANTRY"));*/
+
+	if(typeof outfit !== 'undefined'){					
+		var tableBody = $('<tbody>');
+		var odd = false;
+
+		if(outfit.online_members.length == 0){
+			var tr = $('<tr>').css('color', '#000000');
+			tr.append($('<td>').text("0 MEMBERS ONLINE"));
+			tableBody.append(tr);
+		}
+		
+		outfit.online_members.sort(sort_by('rank_ordinal', true, parseInt));
+		for (var i = 0; i < outfit.online_members.length; ++i) {
+			var p = outfit.online_members[i];
+			
+			var tr = $('<tr>').css('color', '#000000');
+			if (odd) {
+				tr.attr('class', 'odd')
+			} else {
+				tr.attr('class', 'even');
+			}
+			odd = !odd
+			
+			//tr.append($('<td>').append($('<a>').text(p.name.first).attr("href", "?name=" + p.character.name.first)));
+			tr.append($('<td>').text(p.character.name.first));
+			
+			tr.append($('<td>').text(p.character.battle_rank.value).css({'width':'30px'}));
+			//tr.append($('<td>').text(p.character.experience[0].rank));
+			tr.append($('<td>').text(p.rank));
+			//tr.append($('<td>').text(p.character.profile.name.en));
+			tr.append($('<td>').append($('<img>').attr('src', 'img/'+p.character.profile.image_id+'.png')).css({'width':'30px'}));
+
+			/*var infTd = $('<td>');
+			var mechTd = $('<td>');
+			var aeroTd = $('<td>');
+			tr.append(aeroTd);
+			tr.append(mechTd);
+			tr.append(infTd);
+			(function(p, aeroTd, mechTd, infTd) {
+				censusSOE.GetCharacterResourceById(p.character_id, function (json) {
+					aeroTd.text(json.aerospace + " ").append($('<img>').attr('src', "img/aero.png").css('vertical-align', 'middle'));
+					mechTd.text(json.mechanized + " ").append($('<img>').attr('src', "img/mech.png").css('vertical-align', 'middle'));
+					infTd.text(json.infantry + " ").append($('<img>').attr('src', "img/inf.png").css('vertical-align', 'middle'));
+				});
+			})(p,  aeroTd, mechTd, infTd);*/						
+			tableBody.append(tr);
+		}
+	}else{
+		var tableBody = $('<tbody>');
+		var tr = $('<tr>').css('color', '#000000');
+		tr.append($('<td>').text("NOT PART OF AN OUTFIT"));
+		tableBody.append(tr);
+	}
+	table.empty();
+	//table.append($('<thead>').append(thr));
+	table.append(tableBody);
+};
+
+refreshCallback = function () {
+	outiftId = localStorage.getItem("outfitId");
+	
+	if(typeof outiftId !== 'undefined'){	
+		setInterval(function(){refreshStats()},15000);
+			function refreshStats(){
+				displayOutfitMembers(outiftId, "#MembersTable");
+		}
+	}
+	
+	displayOutfitMembers(outiftId, "#MembersTable");
+}
+
+$(document).ready(refreshCallback());
+</script>
+</html>

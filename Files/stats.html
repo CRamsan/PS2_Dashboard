@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="js/overwolfUtils.js"></script>
+	<script type="text/javascript" src="js/censusSOE.js"></script>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+	<div class="resizeGrip" id="resizeGripTopLeft" onmousedown="dragResize('TopLeft');"></div>
+	<div class="resizeGrip" id="resizeGripTop" onmousedown="dragResize('Top');"></div>
+	<div class="resizeGrip" id="resizeGripTopRight" onmousedown="dragResize('TopRight');"></div>
+	<div class="resizeGrip" id="resizeGripRight" onmousedown="dragResize('Right');"></div>
+	<div class="resizeGrip" id="resizeGripBottomRight" onmousedown="dragResize('BottomRight');"></div>
+	<div class="resizeGrip" id="resizeGripBottom" onmousedown="dragResize('Bottom');"></div>
+	<div class="resizeGrip" id="resizeGripBottomLeft" onmousedown="dragResize('BottomLeft');"></div>
+	<div class="resizeGrip" id="resizeGripLeft" onmousedown="dragResize('Left');"></div>
+	<div id="content">
+		<table id="StatsTable" width="100%" onmousedown="dragMove();"></table>
+		<div class="windowController">
+			<button type="button" style="color: black" onclick="minimizeWindows()">Minimize</button>
+			<button type="button" style="color: black" onclick="closeWindows()">Close</button>
+		</div>	
+	</div>
+<body>
+
+<script type="text/javascript">									
+displayStats = function(outfit_id, tableId) {
+	censusSOE.GetStatsById(outfit_id, function (outfit) {
+		showStatsInTable(outfit, $(tableId));
+	});
+}
+
+
+function showStatsInTable(stat_list, table) {
+
+	var thr = $('<tr>');
+	thr.append($('<th>').text("STAT"));
+	thr.append($('<th>').text("TODAY"));
+	thr.append($('<th>').text("THIS WEEK"));
+	thr.append($('<th>').text("THIS MONTH"));
+	thr.append($('<th>').text("ALL TIME"));
+
+	var tableBody = $('<tbody>');
+	var odd = true;
+	
+	var time_stat, kill_stat, death_stat, score_stat;
+	
+	for (var i = 0; i < stat_list.stat_history.length; ++i) {
+		var p = stat_list.stat_history[i];
+		
+		var tr = $('<tr>');
+		
+		if(p.stat_name == "battle_rank"){
+			continue;
+		}else if(p.stat_name == "kills"){
+			kill_stat = p;
+		}else if(p.stat_name == "deaths"){
+			death_stat = p;
+		}else if(p.stat_name == "score"){
+			score_stat = p;
+		}
+							
+		if (odd) {
+			tr.attr('class', 'odd')
+		} else {
+			tr.attr('class', 'even');
+		}
+		odd = !odd		
+							
+		if(p.stat_name != "time"){
+			tr.append($('<td>').text(p.stat_name.toUpperCase()));
+			tr.append($('<td>').text(p.day.d01));
+			tr.append($('<td>').text(p.week.w01));
+			tr.append($('<td>').text(p.month.m01));
+			tr.append($('<td>').text(p.all_time));
+		}else{
+			time_stat = p;
+			tr.append($('<td>').text(p.stat_name.toUpperCase()));
+			tr.append($('<td>').text(formatTime(p.day.d01)));
+			tr.append($('<td>').text(formatTime(p.week.w01)));
+			tr.append($('<td>').text(formatTime(p.month.m01)));
+			tr.append($('<td>').text(formatTime(p.all_time)));
+		}  
+		tableBody.append(tr);
+	}
+	
+	
+	var kdr = $('<tr>');
+	kdr.attr('class', 'even');
+	kdr.append($('<td>').text("KDR"));
+	if(death_stat.day.d01 == 0){death_stat.day.d01++};
+	kdr.append($('<td>').text(roundFloating(kill_stat.day.d01/death_stat.day.d01)));
+	if(death_stat.week.w01 == 0){death_stat.week.w01++};
+	kdr.append($('<td>').text(roundFloating(kill_stat.week.w01/death_stat.week.w01)));
+	if(death_stat.month.m01 == 0){death_stat.month.m01++};
+	kdr.append($('<td>').text(roundFloating(kill_stat.month.m01/death_stat.month.m01)));
+	if(death_stat.all_time == 0){death_stat.all_time++};
+	kdr.append($('<td>').text(roundFloating(kill_stat.all_time/death_stat.all_time)));
+	tableBody.prepend(kdr);
+	
+	var sph = $('<tr>');
+	sph.attr('class', 'odd');
+	sph.append($('<td>').text("SCORE/HOUR"));
+	if(time_stat.day.d01 == 0){time_stat.day.d01++};
+	sph.append($('<td>').text(Math.round(3600 * score_stat.day.d01/time_stat.day.d01)));
+	if(time_stat.week.w01 == 0){time_stat.week.w01++};
+	sph.append($('<td>').text(Math.round(3600 * score_stat.week.w01/time_stat.week.w01)));
+	if(time_stat.month.m01 == 0){time_stat.month.m01++};
+	sph.append($('<td>').text(Math.round(3600 * score_stat.month.m01/time_stat.month.m01)));
+	if(time_stat.all_time == 0){time_stat.all_time++};
+	sph.append($('<td>').text(Math.round(3600 * score_stat.all_time/time_stat.all_time)));
+	tableBody.prepend(sph);
+	
+	table.empty();
+	table.append($('<thead>').append(thr));
+	table.append(tableBody);
+}
+
+
+refreshCallback = function () {
+	profileId = localStorage.getItem("playerId");
+	
+	if(typeof profileId !== 'undefined'){	
+		setInterval(function(){refreshStats()},1000000000);
+			function refreshStats(){
+				displayStats(profileId, "#StatsTable");
+		}
+	}
+	
+	displayStats(profileId, "#StatsTable");
+}
+
+$(document).ready(refreshCallback());
+</script>
+</html>

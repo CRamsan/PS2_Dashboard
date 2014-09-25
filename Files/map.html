@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="js/overwolfUtils.js"></script>
+	<script type="text/javascript" src="js/censusSOE.js"></script>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="resizeGrip" id="resizeGripTopLeft" onmousedown="dragMove();" style="cursor: auto""></div>
+	<div class="resizeGrip" id="resizeGripTop" onmousedown="dragMove();" style="cursor: auto"></div>
+	<div class="resizeGrip" id="resizeGripTopRight" onclick="closeWindows();"></div>
+	<div class="resizeGrip" id="resizeGripRight" onmousedown="dragResize('Right');"></div>
+	<div class="resizeGrip" id="resizeGripBottomRight" onmousedown="dragResize('BottomRight');"></div>
+	<div class="resizeGrip" id="resizeGripBottom" onmousedown="dragResize('Bottom');"></div>
+	<div class="resizeGrip" id="resizeGripBottomLeft" onmousedown="dragMove();" style="cursor: auto"></div>
+	<div class="resizeGrip" id="resizeGripLeft" onmousedown="dragMove();" style="cursor: auto"></div>
+	<div id="content">
+		<iframe id="mapFrame" style="overflow:hidden"></iframe>
+	</div>
+<body>
+
+<script type="text/javascript">									
+refreshCallback = function () {
+	serverId = localStorage.getItem("serverId");
+	$("#mapFrame").attr('src', 'http://ps2.fisu.pw/map/?world=' + serverId);
+}
+
+$(document).ready(refreshCallback());
+</script>
+</html>
