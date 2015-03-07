@@ -20,9 +20,38 @@
 			<div onmousedown="dragMove();">
 				<div>
 					<form  style="float: left" name="myForm" method="get" onsubmit="search(this);return false;">
-						Character Name: 
+						Character: 
 						<input type="text" id="charName" style="color: black"/>
-						<input type="button" name="button" value="Search" onClick="search(this.form)" style="color: black">
+						<table border="1" style="width:100%">
+							<tr>
+								<td>
+									<input type="button" name="button" style="color: black; width: 85px" value="Add to Squad" onClick="search(this.form, '/squad invite')" style="color: black"><p></p>
+									<input type="button" name="button" style="color: black; width: 85px" value="Kick from Squad" onClick="search(this.form, '/squad kick')" style="color: black"><p></p>
+									<input type="button" name="button" style="color: black; width: 85px" value="Promote" onClick="search(this.form, '/squad setowner')" style="color: black"><p></p>
+									<input type="button" name="button" style="color: black; width: 85px" value="Leave" onClick="search(this.form), '/squad leave'" style="color: black"><p></p>
+									<input type="button" name="button" style="color: black; width: 85px" value="Disband Squad" onClick="search(this.form, '/squad disband')" style="color: black">
+								</td>
+								<td>
+									<input type="button" name="button" style="color: black; width: 120px" value="Add to Ignore" onClick="search(this.form, '/ignore add')" style="color: black"><p></p>
+									<input type="button" name="button" style="color: black; width: 120px" value="Remove from Ignore" onClick="search(this.form, '/ignore remove')" style="color: black"><p></p>
+									<input type="button" name="button" style="color: black; width: 120px" value="Invite To Outfit" onClick="search(this.form, '/outfit invite')" style="color: black">
+								</td>
+
+							</tr>
+							<tr>
+								<td>
+									<input type="button" name="button" style="color: black; width: 85px" value="Invite Squad" onClick="search(this.form, '/platoon invitesquad')" style="color: black"><p></p>
+									<input type="button" name="button" style="color: black; width: 85px" value="Kick from Platoon" onClick="search(this.form, '/platoon kick')" style="color: black"><p></p>
+									<input type="button" name="button" style="color: black; width: 85px" value="Set Squad Member" onClick="search(this.form, '/platoon setsquadmember')" style="color: black"><p></p>
+									<input type="button" name="button" style="color: black; width: 85px" value="Leave" onClick="search(this.form, '/platoon leave')" style="color: black"><p></p>
+									<input type="button" name="button" style="color: black; width: 85px" value="Disband Platoon" onClick="search(this.form, '/platoon disband')" style="color: black">
+								</td>
+								<td>
+									<input type="button" name="button" value="Report" onClick="search(this.form, '/report')" style="color: black"><p></p>
+									<input type="button" name="button" value="Suicide" onClick="search(this.form), '/suicide'" style="color: black">
+								</td>
+							</tr>
+						</table>
 					</form>
 				</div>
 			</div>

@@ -10,6 +10,7 @@
 		"icon_gray":"IconMouseNormal.png",
 		"description":"Planetside 2 Dashboard with lots of utilities for players. It includes, stats, killboard, crosshairs, teamspeak integration and more..."
 	},
+	"permissions": ["GameControl",],
 	"data": {
 		"start_window":"MainWindow",
 		"windows":{
@@ -91,9 +92,9 @@
 					"clickthrough":false,
 					"grab_keyboard_focus":false,
 					"ignore_keyboard_events":false,
-					"min_size":{"width":120, "height":120},
-					"max_size":{"width":450, "height":950},
-					"size":{"width":200, "height":575},
+					"min_size":{"width":290, "height":100},
+					"max_size":{"width":290, "height":350},
+					"size":{"width":290, "height":350},
 			},
 		}
 	}

@@ -37,6 +37,13 @@ function search(form){
 	closeWindow("Stats");
 };
 
+function typeMessage(form, message){
+	str = message + " " + form.charName.value;
+	for (var i = 0, len = str.length; i < len; i++) {
+		overwolf.utils.sendKeyStroke (str[i]);
+	}
+};
+
 function closeWindows(){
 	close();
 };
