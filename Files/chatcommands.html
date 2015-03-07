@@ -3,7 +3,6 @@
 	<head> 
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
 		<script type="text/javascript" src="js/overwolfUtils.js"></script>
-		<script type="text/javascript" src="js/censusSOE.js"></script>
 		<link rel="stylesheet" href="style.css" />
 	</head>
 
@@ -25,35 +24,6 @@
 						<input type="text" id="charName" style="color: black"/>
 						<input type="button" name="button" value="Search" onClick="search(this.form)" style="color: black">
 					</form>
-				</div>
-				<div class="windowController" style="float: right">
-					<button type="button" style="color: black" onclick="minimizeWindows()">-</button>
-					<button type="button" style="color: black" onclick="closeWindows()">X</button>
-				</div>
-				<table id="PlayerTable"></table>
-				<div class="container" style="height: 130px; width: 86px">
-					<p></p>
-					<button type="button" style="color: black; width: 86px" onclick="openWindow('Killboard')">Killboard</button><p></p>
-					Screenshot:<p></p>
-					<input type="checkbox" id="killScreenShot" onclick="updateSettings()" >Kills<p></p>
-					<input type="checkbox" id="deathScreenShot" onclick="updateSettings()" >Deaths
-				</div>
-				<div class="container" style="height: 130px; width: 86px">
-					<p></p>
-					<button type="button" style="color: black; width: 85px" onclick="openWindow('Outfit')">Outfit</button>
-					<p></p>
-					<button type="button" style="color: black; width: 85px" onclick="openWindow('Stats')">Stats</button>
-				</div>
-				<div class="container" style="height: 130px; width: 86px">
-					<p></p>
-					<button type="button" style="color: black" onclick="openCenteredWindow('ReticleDot')">Reticle A</button>
-					<button type="button" style="color: black" onclick="closeWindow('ReticleDot')">X</button>
-					<p></p>		
-					<button type="button" style="color: black" onclick="openCenteredWindow('ReticleCircle')">Reticle B</button>
-					<button type="button" style="color: black" onclick="closeWindow('ReticleCircle')">X</button>
-					<p></p>				
-					<button type="button" style="color: black" onclick="openCenteredWindow('ReticleCross')">Reticle C</button>
-					<button type="button" style="color: black" onclick="closeWindow('ReticleCross')">X</button>
 				</div>
 			</div>
 		</div>
