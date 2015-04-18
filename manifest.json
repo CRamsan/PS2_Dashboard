@@ -3,7 +3,7 @@
 	"type":"WebApp",
 	"meta":{
 		"name":"PS2 Dashboard",
-		"version":"2.0.2",
+		"version":"2.1.0",
 		"minimum-overwolf-version":"0.77.10",
 		"author":"Cesar CRamsan Ramirez",
 		"icon":"IconMouseOver.png",
